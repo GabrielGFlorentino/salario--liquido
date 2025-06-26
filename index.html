@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Salário Líquido</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: white;
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Salário Líquido</h1>
+
+  <label for="salario">Salário Bruto (R$):</label>
+  <input type="number" id="salario" placeholder="Ex: 3000" />
+
+  <label for="inss">INSS (%):</label>
+  <input type="number" id="inss" placeholder="Ex: 11" />
+
+  <label for="ir">IR (%):</label>
+  <input type="number" id="ir" placeholder="Ex: 7.5" />
+
+  <label for="meses">Meses Trabalhados (para cálculo de férias):</label>
+  <input type="number" id="meses" placeholder="Ex: 12" />
+
+  <button onclick="calcular()">Calcular</button>
+
+  <div id="resultado"></div>
+
+  <footer>
+    Desenvolvido por Gabriel Gustavo &copy; 2025
+  </footer>
+
+  <script>
+    function calcular() {
+      const salario = parseFloat(document.getElementById("salario").value);
+      const inss = parseFloat(document.getElementById("inss").value);
+      const ir = parseFloat(document.getElementById("ir").value);
+      const meses = parseFloat(document.getElementById("meses").value);
+      const vt = 6; // vale-transporte fixo de 6%
+
+      if (isNaN(salario) || isNaN(inss) || isNaN(ir) || isNaN(meses)) {
+        document.getElementById("resultado").innerHTML =
+          "<strong>Por favor, preencha todos os campos corretamente.</strong>";
+        return;
+      }
+
+      const descontoInss = salario * (inss / 100);
+      const descontoIr = salario * (ir / 100);
+      const descontoVt = salario * (vt / 100);
+      const salarioLiquido = salario - descontoInss - descontoIr - descontoVt;
+
+      const feriasBase = (salario / 12) * meses;
+      const adicionalTerco = feriasBase / 3;
+      const totalFerias = feriasBase + adicionalTerco;
+
+      document.getElementById("resultado").innerHTML = `
+        <h3>Resultado</h3>
+        <p><strong>Salário Bruto:</strong> R$ ${salario.toFixed(2)}</p>
+        <p>Desconto INSS (${inss}%): R$ ${descontoInss.toFixed(2)}</p>
+        <p>Desconto IR (${ir}%): R$ ${descontoIr.toFixed(2)}</p>
+        <p>Vale Transporte (6%): R$ ${descontoVt.toFixed(2)}</p>
+        <p><strong>Salário Líquido:</strong> R$ ${salarioLiquido.toFixed(2)}</p>
+        <hr />
+        <p><strong>Férias Proporcionais (${meses} meses):</strong> R$ ${feriasBase.toFixed(2)}</p>
+        <p>Adicional 1/3 das Férias: R$ ${adicionalTerco.toFixed(2)}</p>
+        <p><strong>Total de Férias:</strong> R$ ${totalFerias.toFixed(2)}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
